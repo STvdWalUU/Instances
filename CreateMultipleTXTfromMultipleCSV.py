@@ -20,10 +20,10 @@ By giving a list of numbers, the code creates a txt file for each combination
 The name of the TXT file will represent the combination of variables and is 
 structured as follows: InstanceName_Ws{windspeed}_Wd{windDirection}_o{nrObservations}.txt
 """
-output_folder = "/Users/stijnvanderwal/Documents/GitHub/Data/Final"
-input_folder = "/Users/stijnvanderwal/Documents/GitHub/Data/CSVfilesFull"
+output_folder = "/Users/stijnvanderwal/Documents/GitHub/Data/nrObservationsTest"
+input_folder = "/Users/stijnvanderwal/Documents/GitHub/Data/CSVfilesFull/15apr"
 
-WIND_SPEED_FORECAST = [6.75, 3.75] # in ms^-1
+WIND_SPEED_FORECAST = [6.75] # in ms^-1
 WIND_DIRECTION_FORECAST = [0, np.round(120*(np.pi/180),2)] # in radians
 DATASET_SIZES = [5,20]
 nrLoadlevels = 10

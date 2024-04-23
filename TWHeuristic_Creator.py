@@ -11,9 +11,11 @@ adapted time windows
 
 """imports"""
 import csv
+import os
 
 """universal variables"""
-filename = "/Users/stijnvanderwal/Documents/GitHub/Simulator/CSVfiles_full/Utrecht_full.csv"
+#filename = "/Users/stijnvanderwal/Documents/GitHub/Simulator/CSVfiles_full/Utrecht_full.csv"
+input_folder = "/Users/stijnvanderwal/Documents/GitHub/Data/CSVfilesFull/12apr"
 
 """function definitions"""
 def AdjustLine(line, AdjustmentType):
@@ -46,20 +48,26 @@ def AdjustLines(OldLines):
     
     for line in OldLines[2:]:
         #print(f"old: {line[6]}")
-        line[6] = AdjustLine(line, AdjustmentType = "min15m")
+        line[6] = AdjustLine(line, AdjustmentType = "min10pc")
         #print(f" new:{line[6]}")
     return OldLines
 
-def WritingToCSVfile(NewLines):
+def WritingToCSVfile(NewLines, filename):
     print("Writing new Instance to csv..")
     with open(filename.replace(".csv", "")+"_NewTW.csv", 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(NewLines)
     
 def main():
-    OldLines = ReadCSVfile(filename)
-    NewLines = AdjustLines(OldLines)
-    WritingToCSVfile(NewLines)
+    for root, _, files in os.walk(input_folder):
+        for file in files:
+            filepath = f"/Users/stijnvanderwal/Documents/GitHub/Data/CSVfilesFull/12apr/{file}"
+            print(files)
+            if os.path.splitext((file))[0].split("_")[-1] == 'Store':
+                continue
+            OldLines = ReadCSVfile(filepath)
+            NewLines = AdjustLines(OldLines)
+            WritingToCSVfile(NewLines, filepath)
     
 if __name__ == '__main__':
     main()

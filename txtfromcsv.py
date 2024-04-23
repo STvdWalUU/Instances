@@ -311,11 +311,17 @@ def computeWeights(windSpeedForecast,windSpeedSigma):
         fractions[i] /= sum(fractions)
         weights[i] += 1
     
-    
     while sum(weights) <= 99:
         #print(weights)
         max_index = np.argmax(fractions - weights/sum(weights))
-        weights[max_index] += 1
+        if max_index%3 ==0:
+            weights[max_index] += 1
+            weights[max_index+2] += 1
+        elif max_index%3 ==2:
+            weights[max_index] += 1
+            weights[max_index-2] += 1
+        else:
+            weights[max_index] += 1
     
     #print(np.floor(100*weights), sum(np.floor(100*weights)))
         
@@ -471,7 +477,7 @@ def write_travel_time_matrix_to_file_weights(travel_time_matrix, number_customer
         # Write metadata to the file
         file.write(f"{number_customers}, {number_loadlevels}, {number_observations}, wind:{WIND_SPEED_FORECAST} ms^-1, {WIND_DIRECTION_FORECAST} deg \n")
         for i in range(len(weights)-1): 
-            file.write(f"{int(weights[i]), }")
+            file.write(f"{int(weights[i])},")
         file.write(f"{int(weights[-1])}")
         file.write("\n")
         
