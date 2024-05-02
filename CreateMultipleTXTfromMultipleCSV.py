@@ -20,11 +20,11 @@ By giving a list of numbers, the code creates a txt file for each combination
 The name of the TXT file will represent the combination of variables and is 
 structured as follows: InstanceName_Ws{windspeed}_Wd{windDirection}_o{nrObservations}.txt
 """
-output_folder = "/Users/stijnvanderwal/Documents/GitHub/Data/nrObservationsTest"
+output_folder = "/Users/stijnvanderwal/Documents/GitHub/Data/MultiModalTests"
 input_folder = "/Users/stijnvanderwal/Documents/GitHub/Data/CSVfilesFull/15apr"
 
 WIND_SPEED_FORECAST = [6.75] # in ms^-1
-WIND_DIRECTION_FORECAST = [0, np.round(120*(np.pi/180),2)] # in radians
+WIND_DIRECTION_FORECAST = [0] # in radians
 DATASET_SIZES = [5,20]
 nrLoadlevels = 10
 nrObservations = max(DATASET_SIZES)
@@ -162,11 +162,11 @@ def generate_txt_file(seed, output_folder, input_file, WIND_SPEED_FORECAST,
      #                       WIND_SPEED_FORECAST, WIND_SPEED_SIGMA, WIND_DIRECTION_FORECAST, WIND_DIRECTION_SIGMA, 
       #                      nrObservations, nrLoadlevels)
     travel_time_matrix = txtfromcsv.computeTravelTimeMatrix4DWithTwoModes(seed, customers, distances, 
-                            WIND_SPEED_FORECAST, WIND_SPEED_SIGMA, WIND_DIRECTION_FORECAST, WIND_DIRECTION_SIGMA, np.round(WIND_DIRECTION_FORECAST + (30/180*np.pi),2), WIND_DIRECTION_SIGMA, 
+                            WIND_SPEED_FORECAST, WIND_SPEED_SIGMA, WIND_DIRECTION_FORECAST, WIND_DIRECTION_SIGMA, np.round(WIND_DIRECTION_FORECAST + (90/180*np.pi),2), WIND_DIRECTION_SIGMA, 
                             nrObservations, nrLoadlevels)
     for size in DATASET_SIZES:
         travelMatrixToPrint = convert4Dto2D(travel_time_matrix[:,:,:,0:size])
-        output_file = os.path.join(output_folder, os.path.splitext(os.path.basename(input_file))[0] + f"_final_Ws{WIND_SPEED_FORECAST}_Wd{WIND_DIRECTION_FORECAST}_o{size}.txt")
+        output_file = os.path.join(output_folder, os.path.splitext(os.path.basename(input_file))[0] + f"_final_Ws{WIND_SPEED_FORECAST}_Wd{WIND_DIRECTION_FORECAST}_o{size}_multimodal.txt")
         txtfromcsv.write_travel_time_matrix_to_file(travelMatrixToPrint, len(customers), nrLoadlevels, size, 
                                                     output_file, WIND_SPEED_FORECAST, 
                                                     WIND_DIRECTION_FORECAST)
@@ -210,7 +210,7 @@ def generate_txt_file_weights(output_folder, input_file, WIND_SPEED_FORECAST,
     """
 
     customers, distances = txtfromcsv.csvImporter(input_file)
-    if abs(WIND_DIRECTION_SIGMA) >= 7:
+    if abs(WIND_DIRECTION_SIGMA) >= 6.3:
         raise Exception()
     # this returns a 4D matrix
     #travel_time_matrix = txtfromcsv.computeTravelTimeMatrix4D(seed, customers, distances, 
@@ -226,7 +226,6 @@ def generate_txt_file_weights(output_folder, input_file, WIND_SPEED_FORECAST,
                                                 output_file, WIND_SPEED_FORECAST, 
                                                     WIND_DIRECTION_FORECAST,weights)
 
-
 # The function makes sure we use each instance from the input folder
 def generate_txt_files_from_folder(seed, output_folder, input_folder, WIND_SPEED_FORECAST, 
                                    WIND_SPEED_SIGMA, WIND_DIRECTION_FORECAST, WIND_DIRECTION_SIGMA):
@@ -238,7 +237,7 @@ def generate_txt_files_from_folder(seed, output_folder, input_folder, WIND_SPEED
             print("\n")
             print(f"Busy converting {file}")
             input_file = os.path.join(root, file)
-            if os.path.exists(os.path.join(output_folder, os.path.splitext(os.path.basename(input_file))[0] + f"_final_Ws{WIND_SPEED_FORECAST}_Wd{np.round(WIND_DIRECTION_FORECAST,2)}_oFC.txt")):
+            if os.path.exists(os.path.join(output_folder, os.path.splitext(os.path.basename(input_file))[0] + f"_final_Ws{WIND_SPEED_FORECAST}_Wd{np.round(WIND_DIRECTION_FORECAST,2)}_o5_multimodal.txt")):
                 print(f"_Ws{WIND_SPEED_FORECAST}_Wd{WIND_DIRECTION_FORECAST} already exists for {os.path.splitext(os.path.basename(input_file))[0]}")
                 continue
             generate_txt_file(seed, output_folder, input_file, WIND_SPEED_FORECAST, 
